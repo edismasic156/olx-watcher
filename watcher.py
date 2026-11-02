@@ -121,6 +121,8 @@ def notify(title, message, click=None, image=None, priority=4):
     payload = {"topic": NTFY_TOPIC, "title": title, "message": message, "priority": priority, "tags": ["desktop_computer"]}
     if click:
         payload["click"] = click
+        # Dugme ispod notifikacije (dugi pritisak na iPhoneu)
+        payload["actions"] = [{"action": "view", "label": "Otvori oglas", "url": click, "clear": True}]
     if image:
         payload["attach"] = image
     req = urllib.request.Request(
@@ -184,7 +186,7 @@ def check_once():
             price_txt = f"{price:.0f} KM" if price else (it.get("display_price") or "Po dogovoru")
             notify(
                 f"Mac mini {chip} · {price_txt}",
-                str(it.get("title")),
+                f"{it.get('title')}\nolx.ba/artikal/{it['id']}",
                 click=f"https://olx.ba/artikal/{it['id']}",
                 image=it.get("image") if isinstance(it.get("image"), str) else None,
             )
