@@ -20,10 +20,10 @@ QUERIES = ["mac mini", "macmini"]
 MAX_AGE_HOURS = 48
 MIN_PRICE = 150                 # ispod ovoga je obično fake cijena
 INCLUDE_NEGOTIABLE = False      # "Po dogovoru"
-UNKNOWN_CHIP_MAX = 600          # oglasi bez čipa u naslovu (None = ignoriši ih)
+UNKNOWN_CHIP_MAX = 800          # oglasi bez čipa u naslovu (None = ignoriši ih)
 MAX_PRICE = {                   # "povoljno" = cijena <= prag (KM)
-    "M1": 600, "M2": 800, "M2 Pro": 1300, "M3": 900, "M3 Pro": 1500,
-    "M4": 1100, "M4 Pro": 2100, "M5": 1400, "M5 Pro": 2400, "M6": 1700, "M6 Pro": 2700,
+    "M1": 800, "M2": 1000, "M2 Pro": 1500, "M3": 1100, "M3 Pro": 1700,
+    "M4": 1300, "M4 Pro": 2300, "M5": 1600, "M5 Pro": 2600, "M6": 1900, "M6 Pro": 2900,
 }
 EXCLUDE = [
     "intel", "i3", "i5", "i7", "i9", "2012", "2014", "2018",
