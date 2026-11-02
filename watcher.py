@@ -116,7 +116,7 @@ def fetch(query, with_filters=True):
 
 def notify(title, message, click=None, image=None, priority=4):
     if not NTFY_TOPIC:
-        print(f"[bez NTFY_TOPIC] {title} | {message} | {click}")
+        print(f"UPOZORENJE: NTFY_TOPIC secret nije postavljen, notifikacija nije poslana: {title} | {message}")
         return
     payload = {"topic": NTFY_TOPIC, "title": title, "message": message, "priority": priority, "tags": ["desktop_computer"]}
     if click:
@@ -165,24 +165,29 @@ def check_once():
         if posted and posted.timestamp() < cutoff:
             continue
         chip = evaluate(it)
+        print(f"  {'✅' if chip else '  '} {it.get('price')!s:>6} KM  {it.get('title')}")
         if chip:
             deals.append((chip, it))
 
-    if deals:
-        if state["initialized"]:
-            for chip, it in deals[:10]:
-                price = to_float(it.get("price"))
-                price_txt = f"{price:.0f} KM" if price else (it.get("display_price") or "Po dogovoru")
-                notify(
-                    f"Mac mini {chip} · {price_txt}",
-                    str(it.get("title")),
-                    click=f"https://olx.ba/artikal/{it['id']}",
-                    image=it.get("image") if isinstance(it.get("image"), str) else None,
-                )
-        else:
-            notify("Mac mini lovac je aktivan",
-                   f"Trenutno {len(deals)} povoljnih oglasa. Od sada javljam samo nove.",
-                   click="https://olx.ba/pretraga?q=mac+mini", priority=3)
+    if os.environ.get("TEST_NOTIFICATION") == "true":
+        notify("Mac mini lovac test", "Ako ovo vidiš, notifikacije rade.",
+               click="https://olx.ba/pretraga?q=mac+mini", priority=3)
+
+    if not state["initialized"]:
+        # Prvi run: uvijek javi da radi (i kad trenutno nema povoljnih oglasa)
+        notify("Mac mini lovac je aktivan",
+               f"Trenutno {len(deals)} povoljnih oglasa od {len(items)} Mac mini oglasa. Od sada javljam samo nove.",
+               click="https://olx.ba/pretraga?q=mac+mini", priority=3)
+    elif deals:
+        for chip, it in deals[:10]:
+            price = to_float(it.get("price"))
+            price_txt = f"{price:.0f} KM" if price else (it.get("display_price") or "Po dogovoru")
+            notify(
+                f"Mac mini {chip} · {price_txt}",
+                str(it.get("title")),
+                click=f"https://olx.ba/artikal/{it['id']}",
+                image=it.get("image") if isinstance(it.get("image"), str) else None,
+            )
 
     state["initialized"] = True
     save_state(state)

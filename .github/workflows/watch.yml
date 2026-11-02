@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "*/5 * * * *"    # svakih 5 min (GitHub zna kasniti 5-15 min)
   workflow_dispatch:
+    inputs:
+      test_notification:
+        description: "Pošalji test notifikaciju"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -24,6 +29,7 @@ jobs:
       - name: Provjeri OLX
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TEST_NOTIFICATION: ${{ inputs.test_notification }}
         run: python watcher.py
       - name: Sačuvaj viđene oglase
         run: |
